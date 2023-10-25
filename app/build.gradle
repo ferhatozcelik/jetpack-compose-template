@@ -1,23 +1,24 @@
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-    id 'kotlin-parcelize'
-    id 'kotlin-kapt'
-    id 'com.google.dagger.hilt.android'
+    alias(libs.plugins.com.android.application)
+    alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.com.google.dagger.hilt.android)
+    alias(libs.plugins.com.google.devtools.ksp)
+    id('kotlin-parcelize')
+    // id("com.google.gms.google-services") // Google Play Services
+    // id("com.google.firebase.crashlytics") // Google Play Services
 }
-
-kapt {
-    correctErrorTypes true
+hilt {
+    enableAggregatingTask = true
 }
 
 android {
     namespace 'com.ferhatozcelik.jetpackcomposetemplate'
-    compileSdk 33
+    compileSdk appCompileSdkVersion
 
     defaultConfig {
         applicationId "com.ferhatozcelik.jetpackcomposetemplate"
-        minSdk 24
-        targetSdk 33
+        minSdk appMinSdkVersion
+        targetSdk appTargetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -30,7 +31,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -44,7 +45,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.3.2'
+        kotlinCompilerExtensionVersion '1.5.3'
     }
     packagingOptions {
         resources {
@@ -55,59 +56,79 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation platform('org.jetbrains.kotlin:kotlin-bom:1.8.0')
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
-    implementation 'androidx.activity:activity-compose:1.7.2'
-    implementation platform('androidx.compose:compose-bom:2022.10.00')
-    implementation 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.ui:ui-graphics'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.compose.material3:material3'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation platform('androidx.compose:compose-bom:2022.10.00')
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
-    debugImplementation 'androidx.compose.ui:ui-tooling'
-    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+    // Kotlin
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.core.ktx)
+    implementation(libs.appcompat)
 
-    // Local Unit Tests
-    implementation "androidx.test:core:1.5.0"
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
-    testImplementation "junit:junit:4.13.2"
-    testImplementation "org.hamcrest:hamcrest-all:1.3"
-    testImplementation "androidx.arch.core:core-testing:2.2.0"
-    testImplementation "org.robolectric:robolectric:4.10.3"
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1"
-    testImplementation "com.google.truth:truth:1.1.3"
-    testImplementation "org.mockito:mockito-core:5.1.1"
+    // Compose
+    implementation(libs.activity.compose)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.ui)
+    implementation(libs.ui.graphics)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.material3)
 
-    // Instrumented Unit Tests
-    androidTestImplementation "junit:junit:4.13.2"
-    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:2.28.1"
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1"
-    androidTestImplementation "androidx.arch.core:core-testing:2.2.0"
-    androidTestImplementation "com.google.truth:truth:1.1.3"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    androidTestImplementation "org.mockito:mockito-core:5.1.1"
+    // JUnit
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.ui.test.junit4)
+    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.ui.test.manifest)
+
+    // Material Design
+    implementation(libs.material)
+    implementation libs.androidx.viewpager2
+
+    // ConstraintLayout
+    implementation(libs.constraintlayout)
+
+    // Legacy Support Library
+    implementation(libs.androidx.legacy.support.v4)
+
+    // Multidex
+    implementation(libs.androidx.multidex)
+
+    // DeSugar Use Java 8 language features and APIs
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 
     // Dagger Hilt
-    implementation "com.google.dagger:hilt-android:2.44"
-    kapt "com.google.dagger:hilt-compiler:2.44"
-
-    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
-    implementation 'androidx.navigation:navigation-compose:2.5.3'
+    implementation(libs.hilt)
+    ksp(libs.hilt.compiler)
 
     // Room
-    implementation "androidx.room:room-ktx:2.5.2"
-    implementation "androidx.room:room-runtime:2.5.2"
-    kapt "androidx.room:room-compiler:2.5.2"
+    implementation(libs.room)
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
+
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Lifecycle Scopes
+    implementation(libs.lifecycle)
+    implementation(libs.lifecycle.runtime)
+    implementation(libs.lifecycle.runtime.ktx)
 
     // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation "com.squareup.okhttp3:logging-interceptor:4.7.2"
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+
+    // Navigation
+    implementation libs.androidx.hilt.navigation.compose
+    implementation libs.androidx.navigation.compose
+
+
+    // Glide
+    implementation(libs.glide)
+    ksp(libs.ksp)
+
+    // Firebase
+    // implementation(libs.firebase)
+    // implementation(libs.analytics)
+    // implementation(libs.crashlytics)
 
 }
