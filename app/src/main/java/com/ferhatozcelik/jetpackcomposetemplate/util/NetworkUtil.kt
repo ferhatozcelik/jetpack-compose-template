@@ -17,7 +17,6 @@ class NetworkUtil {
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
                 else -> false
             }
-            return false
         }
     }
 }

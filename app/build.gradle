@@ -1,8 +1,10 @@
 plugins {
     alias(libs.plugins.com.android.application)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
+    // Kotlin support is built into AGP 9+: org.jetbrains.kotlin.android no longer needs to be applied.
     alias(libs.plugins.com.google.dagger.hilt.android)
     alias(libs.plugins.com.google.devtools.ksp)
+    alias(libs.plugins.org.jetbrains.kotlin.plugin.compose)
+    alias(libs.plugins.org.jetbrains.kotlin.plugin.serialization)
     id('kotlin-parcelize')
     // id("com.google.gms.google-services") // Google Play Services
     // id("com.google.firebase.crashlytics") // Google Play Services
@@ -31,21 +33,17 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = '17'
-    }
+    // Kotlin support is built into AGP 9+. jvmTarget defaults to compileOptions.targetCompatibility,
+    // so no separate `kotlinOptions`/`kotlin { compilerOptions { ... } }` block is required here.
     buildFeatures {
         compose true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.5.14'
     }
     packagingOptions {
         resources {
@@ -85,12 +83,6 @@ dependencies {
     // ConstraintLayout
     implementation(libs.constraintlayout)
 
-    // Legacy Support Library
-    implementation(libs.androidx.legacy.support.v4)
-
-    // Multidex
-    implementation(libs.androidx.multidex)
-
     // DeSugar Use Java 8 language features and APIs
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
@@ -117,9 +109,14 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
 
-    // Navigation
+    // Navigation (type-safe routes)
     implementation libs.androidx.hilt.navigation.compose
     implementation libs.androidx.navigation.compose
+    implementation libs.kotlinx.serialization.json
+
+    // Lifecycle-aware Compose state collection
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.lifecycle.runtime.compose)
 
 
     // Glide

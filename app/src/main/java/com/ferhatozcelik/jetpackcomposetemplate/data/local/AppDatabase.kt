@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 import javax.inject.Provider
 
-@Database(entities = [ExampleEntity::class], version = 1)
+@Database(entities = [ExampleEntity::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 

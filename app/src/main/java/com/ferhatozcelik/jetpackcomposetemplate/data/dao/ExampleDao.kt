@@ -10,7 +10,7 @@ interface ExampleDao {
     fun getExampleData(): List<ExampleEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(search: ExampleEntity?)
+    suspend fun insert(search: ExampleEntity)
 
     @Update
     suspend fun update(search: ExampleEntity)
